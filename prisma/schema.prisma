@@ -22,3 +22,14 @@ model Aluno {
 
   @@map("alunos")
 }
+
+model Professor {
+  id       Int      @id @default(autoincrement())
+  cpf      String   @unique
+  nome     String
+  dataNasc DateTime
+  celular  String
+  status   Boolean
+
+  @@map("professores")
+}

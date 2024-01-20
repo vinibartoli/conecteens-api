@@ -26,14 +26,12 @@ export class AlunosService {
             throw new ConflictException("Aluno já cadastrado!");
         }
 
-        const obj = this.prisma.aluno.create({data});
-
-        return obj;
+        return this.prisma.aluno.create({data});
     }
 
     async update(id: number, data: AlunosUpdateDTO) {
         const cpfExist = await this.prisma.aluno.findFirst({ where: { cpf: data.cpf }});
-        if(cpfExist != null) {
+        if(cpfExist) {
             throw new ConflictException("Já existe um aluno com esse CPF!")
         }
 
