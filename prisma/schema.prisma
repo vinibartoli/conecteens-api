@@ -9,3 +9,16 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Aluno {
+  id                 Int      @id @default(autoincrement())
+  cpf                String   @unique
+  nome               String
+  nomeResponsavel    String
+  dataNasc           DateTime
+  celular            String
+  celularResponsavel String
+  status             Boolean  @default(true)
+
+  @@map("alunos")
+}
