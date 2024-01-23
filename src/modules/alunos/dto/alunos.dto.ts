@@ -1,27 +1,37 @@
-import { IsBoolean, IsDate, IsOptional, IsString } from "class-validator";
+import { IsOptional, IsBoolean, IsDateString } from 'class-validator';
 
 export class AlunosDTO {
-    id: number;
-    @IsString()
-    cpf: string;
-    @IsString()
-    nome: string;
-    @IsString()
-    nomeResponsavel: string
-    @IsDate()
-    dataNasc: Date;
-    @IsString()
-    celular: string;
-    @IsString()
-    celularResponsavel: string;
-    @IsBoolean()
-    status: boolean;
-    @IsOptional()
-    usuariocriacao: string;
-    @IsOptional()
-    datacriacao: Date;
-    @IsOptional()
-    usuarioalteracao: string;
-    @IsOptional()
-    dataalteracao: Date;
+  @IsOptional()
+  id?: number;
+
+  cpf: string;
+
+  nome: string;
+
+  nomeResponsavel: string;
+
+  @IsDateString()
+  dataNasc: Date;
+
+  celular: string;
+
+  celularResponsavel: string;
+
+  @IsBoolean()
+  @IsOptional()
+  status?: boolean;
+
+  @IsOptional()
+  usuariocriacao?: string;
+
+  @IsOptional()
+  @IsDateString()
+  datacriacao?: Date;
+
+  @IsOptional()
+  usuarioalteracao?: string;
+
+  @IsOptional()
+  @IsDateString()
+  dataalteracao?: Date;
 }
