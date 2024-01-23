@@ -30,5 +30,4 @@ export class TurmasController {
     async update(@Param('id', ParseIntPipe) id: number, @Body() data: TurmasUpdateDTO) {
         return this.turmasService.update(id, data);
     }
-
 }

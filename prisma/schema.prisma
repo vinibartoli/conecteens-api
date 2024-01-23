@@ -8,36 +8,59 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+  
 }
 
 model Aluno {
-  id                 Int      @id @default(autoincrement())
-  cpf                String   @unique
+  id                 Int       @id @default(autoincrement())
+  cpf                String    @unique
   nome               String
   nomeResponsavel    String
   dataNasc           DateTime
   celular            String
   celularResponsavel String
-  status             Boolean  @default(true)
+  status             Boolean   @default(true)
+  usuariocriacao     String?
+  datacriacao        DateTime?
+  usuarioalteracao   String?
+  dataalteracao      DateTime?
 
   @@map("alunos")
 }
 
 model Professor {
-  id       Int      @id @default(autoincrement())
-  cpf      String   @unique
-  nome     String
-  dataNasc DateTime
-  celular  String
-  status   Boolean
+  id               Int       @id @default(autoincrement())
+  cpf              String    @unique
+  nome             String
+  dataNasc         DateTime
+  celular          String
+  status           Boolean
+  usuariocriacao   String?
+  datacriacao      DateTime?
+  usuarioalteracao String?
+  dataalteracao    DateTime?
 
   @@map("professores")
 }
 
-model Turma{
-  id Int @id @default(autoincrement())
-  descricao String
-  status Boolean
+model Turma {
+  id               Int       @id @default(autoincrement())
+  descricao        String
+  status           Boolean
+  usuariocriacao   String?
+  datacriacao      DateTime?
+  usuarioalteracao String?
+  dataalteracao    DateTime?
 
   @@map("turmas")
+}
+
+model Usuario {
+  id       Int     @id @default(autoincrement())
+  name     String
+  username String
+  password String
+  status   Boolean
+
+  @@map("usuarios")
 }
