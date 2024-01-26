@@ -6,10 +6,11 @@ https://docs.nestjs.com/modules
 */
 
 import { Module } from '@nestjs/common';
+import { MomentService } from '../shared/moment.service';
 
 @Module({
   imports: [],
   controllers: [AlunosController],
-  providers: [AlunosService, PrismaService],
+  providers: [AlunosService, PrismaService, MomentService],
 })
 export class AlunosModule {}

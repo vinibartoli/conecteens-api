@@ -8,10 +8,13 @@ import { AlunosDTO } from './dto/alunos.dto';
 import { AlunosUpdateDTO } from './dto/alunosUpdate.dto';
 import * as moment from 'moment-timezone';
 import { Prisma } from '@prisma/client';
+import { MomentService } from '../shared/moment.service';
 
 @Injectable()
 export class AlunosService {
-    constructor(private prisma: PrismaService) {}
+    constructor(
+        private prisma: PrismaService,
+        private momentService: MomentService) {}
 
     async findAll() {
         return this.prisma.aluno.findMany();
@@ -30,11 +33,14 @@ export class AlunosService {
             throw new ConflictException('Aluno já cadastrado!');
         }
 
+        const currentDate = moment.utc();
+        const utcMinus3 = currentDate.clone().subtract(3, 'hours');
+
         const alunoCreateInput = {
             ...rest,
             cpf: data.cpf,
             usuariocriacao: 'teste',
-            datacriacao: moment.utc().toDate(),
+            datacriacao: this.momentService.timeExact()
         };
 
         const createdAluno = await this.prisma.aluno.create({
@@ -45,10 +51,14 @@ export class AlunosService {
     }
 
     async update(id: number, data: AlunosUpdateDTO) {
+        const { cpf, ...rest } = data
+
         const cpfExist = await this.prisma.aluno.findFirst({ where: { cpf: data.cpf }});
         if(cpfExist) {
             throw new ConflictException("Já existe um aluno com esse CPF!")
         }
+
+        
 
         return this.prisma.aluno.update({
             data,
