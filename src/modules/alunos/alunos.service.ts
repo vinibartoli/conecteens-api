@@ -33,21 +33,18 @@ export class AlunosService {
             throw new ConflictException('Aluno já cadastrado!');
         }
 
-        const currentDate = moment.utc();
-        const utcMinus3 = currentDate.clone().subtract(3, 'hours');
-
-        const alunoCreateInput = {
+        const objCreateInput = {
             ...rest,
             cpf: data.cpf,
             usuariocriacao: 'teste',
-            datacriacao: this.momentService.timeExact()
+            datacriacao: await this.momentService.timeExact()
         };
 
-        const createdAluno = await this.prisma.aluno.create({
-            data: alunoCreateInput as Prisma.AlunoCreateInput,
+        const createdObj= await this.prisma.aluno.create({
+            data: objCreateInput as Prisma.AlunoCreateInput,
         });
 
-        return createdAluno;
+        return createdObj;
     }
 
     async update(id: number, data: AlunosUpdateDTO) {
@@ -58,11 +55,17 @@ export class AlunosService {
             throw new ConflictException("Já existe um aluno com esse CPF!")
         }
 
-        
+        const objUpdateInput = {
+            ...rest,
+            usuarioalteracao: 'teste-update',
+            dataalteracao: await this.momentService.timeExact()
+        };
 
-        return this.prisma.aluno.update({
-            data,
+        const updatedObj = await this.prisma.aluno.update({
+            data: objUpdateInput,
             where: {id}
         })
+
+        return updatedObj;
     }
 }
