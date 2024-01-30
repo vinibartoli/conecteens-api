@@ -24,6 +24,7 @@ model Aluno {
   datacriacao        DateTime?
   usuarioalteracao   String?
   dataalteracao      DateTime?
+  aula Aulas_Alunos[]
 
   @@map("alunos")
 }
@@ -39,6 +40,7 @@ model Professor {
   datacriacao      DateTime?
   usuarioalteracao String?
   dataalteracao    DateTime?
+  aula Aula[]
 
   @@map("professores")
 }
@@ -51,6 +53,7 @@ model Turma {
   datacriacao      DateTime?
   usuarioalteracao String?
   dataalteracao    DateTime?
+  aula Aula[]
 
   @@map("turmas")
 }
@@ -63,4 +66,31 @@ model Usuario {
   status   Boolean
 
   @@map("usuarios")
+}
+
+model Aula {
+  id Int @id @default(autoincrement())
+  professorId Int
+  professor Professor @relation(fields: [professorId], references: [id])
+  turmaId Int
+  turma Turma @relation(fields: [turmaId], references: [id])
+  aluno Aulas_Alunos[]
+  tema String
+  status Boolean
+  usuariocriacao   String?
+  datacriacao      DateTime?
+  usuarioalteracao String?
+  dataalteracao    DateTime?
+
+  @@map("aulas")
+}
+
+model Aulas_Alunos {
+  aula Aula @relation(fields: [aulaId], references: [id])
+  aulaId Int
+  aluno Aluno @relation(fields: [alunoId], references: [id])
+  alunoId Int
+
+  @@id([aulaId, alunoId])
+  @@map("aula_aluno")
 }
