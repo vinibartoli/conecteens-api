@@ -6,10 +6,15 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { ProfessoresDTO } from './dto/professores.dto';
 import { ProfessoresUpdateDTO } from './dto/professoresUpdate.dto';
+import { MomentService } from '../shared/moment.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProfessoresService {
-    constructor(private prisma: PrismaService) {}
+    constructor(
+        private prisma: PrismaService,
+        private momentService: MomentService
+        ) {}
 
     async findAll() {
         return await this.prisma.professor.findMany();
@@ -20,25 +25,48 @@ export class ProfessoresService {
     }
 
     async create(data: ProfessoresDTO) {
-        const dataExist = await this.prisma.professor.findFirst({ where: {cpf: data.cpf}});
+        const { cpf, ...rest } = data;
 
-        if(dataExist) {
-            throw new ConflictException("Professor já cadastrado!")
+        const objExists = await this.prisma.professor.findFirst({ where: { cpf } });
+
+        if (objExists) {
+            throw new ConflictException('Professor já cadastrado!');
         }
 
-        return await this.prisma.professor.create({data});
+        const objCreateInput = {
+            ...rest,
+            cpf: data.cpf,
+            usuariocriacao: 'teste',
+            datacriacao: await this.momentService.timeExact()
+        };
+
+        const createdObj= await this.prisma.professor.create({
+            data: objCreateInput as Prisma.ProfessorCreateInput,
+        });
+
+        return createdObj;
     }
 
     async update(id: number, data: ProfessoresUpdateDTO) {
-        const dataExist = await this.prisma.professor.findFirst({where: {cpf: data.cpf}})
+        const { cpf, ...rest } = data
 
-        if(dataExist) {
-            throw new ConflictException("Professor já cadastrado!")
+        const objExist = await this.prisma.professor.findFirst({ where: { cpf: data.cpf }});
+        
+        if(objExist) {
+            throw new ConflictException("Já existe um professor com esse CPF!")
         }
 
-        return await this.prisma.professor.update({
-            data,
+        const objUpdateInput = {
+            ...rest,
+            usuarioalteracao: 'teste-update',
+            dataalteracao: await this.momentService.timeExact()
+        };
+
+        const updatedObj = await this.prisma.aluno.update({
+            data: objUpdateInput,
             where: {id}
         })
+
+        return updatedObj;
     }
 }

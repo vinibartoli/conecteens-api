@@ -6,7 +6,6 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { AlunosDTO } from './dto/alunos.dto';
 import { AlunosUpdateDTO } from './dto/alunosUpdate.dto';
-import * as moment from 'moment-timezone';
 import { Prisma } from '@prisma/client';
 import { MomentService } from '../shared/moment.service';
 
@@ -27,9 +26,9 @@ export class AlunosService {
     async create(data: AlunosDTO) {
         const { cpf, ...rest } = data;
 
-        const alunoExists = await this.prisma.aluno.findFirst({ where: { cpf } });
+        const objExists = await this.prisma.aluno.findFirst({ where: { cpf } });
 
-        if (alunoExists) {
+        if (objExists) {
             throw new ConflictException('Aluno já cadastrado!');
         }
 
@@ -50,8 +49,9 @@ export class AlunosService {
     async update(id: number, data: AlunosUpdateDTO) {
         const { cpf, ...rest } = data
 
-        const cpfExist = await this.prisma.aluno.findFirst({ where: { cpf: data.cpf }});
-        if(cpfExist) {
+        const objExist = await this.prisma.aluno.findFirst({ where: { cpf: data.cpf }});
+        
+        if(objExist) {
             throw new ConflictException("Já existe um aluno com esse CPF!")
         }
 
