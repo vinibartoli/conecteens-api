@@ -1,15 +1,23 @@
-import {  IsDateString, IsOptional } from 'class-validator';
+import {  ArrayMinSize, IsBoolean, IsDateString, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class AulasDTO {
-  professorId: number;
+  @IsInt()
+  @IsOptional()
+  professorId?: number;
 
-  turmaId: number;
+  @IsInt()
+  @IsOptional()
+  turmaId?: number;
 
-  alunosId: number[]
+  @IsString()
+  tema: string;
 
+  @IsBoolean()
   status: boolean;
 
-  tema: string;
+  @IsOptional()
+  @ArrayMinSize(1)
+  alunosIds?: number[];
 
   @IsOptional()
   usuariocriacao?: string;

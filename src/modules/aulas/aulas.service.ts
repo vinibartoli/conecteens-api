@@ -1,9 +1,8 @@
-
 /*
 https://docs.nestjs.com/providers#services
 */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { MomentService } from '../shared/moment.service';
 import { AulasDTO } from './dto/aulas.dto';
@@ -20,7 +19,7 @@ export class AulasService {
       include: {
         professor: { select: { id: true, nome: true }},
         turma: { select: { id: true, descricao: true }},
-        aluno: { select: { id: true, nome: true }}
+        aluno: { select: { alunoId: true, aluno: true }}
       }
     })
   }
@@ -30,29 +29,53 @@ export class AulasService {
   }
 
   async create(obj: AulasDTO) {
-    const { professorId, turmaId, alunosId, status, tema, usuariocriacao, datacriacao, usuarioalteracao, dataalteracao, ...rest } = obj;
-  
+    const { professorId, turmaId, tema, status, alunosIds } = obj;
+
+    // Verifique se o professor existe
+    const professorExists = await this.prisma.professor.findUnique({
+      where: { id: professorId },
+    });
+    if (!professorExists) {
+      throw new NotFoundException('Professor não encontrado');
+    }
+
+    // Verifique se a turma existe
+    const turmaExists = await this.prisma.turma.findUnique({
+      where: { id: turmaId },
+    });
+    if (!turmaExists) {
+      throw new NotFoundException('Turma não encontrada');
+    }
+
+    // Verifique se os alunos existem
+    const alunos = await this.prisma.aluno.findMany({
+      where: { id: { in: alunosIds } },
+    });
+
+    if (alunos.length !== alunosIds.length) {
+      throw new NotFoundException('Um ou mais alunos não encontrados');
+    }
+
+    // Crie a aula
     const createdAula = await this.prisma.aula.create({
       data: {
-        professor: {
-          connect: { id: professorId }
-        },
-        turma: {
-          connect: { id: turmaId }
-        },
-        aluno: {
-          connect: alunosId.map((alunoId) => ({ id: alunoId }))
-        },
-        status,
+        professorId,
+        turmaId,
         tema,
+        status,
         datacriacao: await this.momentService.timeExact(),
         usuariocriacao: 'teste',
-        usuarioalteracao,
-        dataalteracao,
-        ...rest,
+        aluno: {
+          create: alunos.map((aluno) => ({ alunoId: aluno.id })),
+        },
+      },
+      include: {
+        aluno: { select: { aluno: {select: {id: true, nome: true}}}},
+        professor: { select: { id: true, nome: true }},
+        turma: { select: { id: true, descricao: true}}
       },
     });
-  
+
     return createdAula;
   }
 }
