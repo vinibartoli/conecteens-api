@@ -7,7 +7,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { MomentService } from '../shared/moment.service';
 import { AulasDTO } from './dto/aulas.dto';
-import { Prisma, Professor } from '@prisma/client';
 
 @Injectable()
 export class AulasService {
@@ -21,7 +20,7 @@ export class AulasService {
       include: {
         professor: { select: { id: true, nome: true }},
         turma: { select: { id: true, descricao: true }},
-        aluno: { select: { alunoId: true, aluno: true }}
+        aluno: { select: { id: true, nome: true }}
       }
     })
   }
@@ -31,12 +30,8 @@ export class AulasService {
   }
 
   async create(obj: AulasDTO) {
-    const { professorId, turmaId, alunosId, status, tema, usuariocriacao, datacriacao, usuarioalteracao, dataalteracao, ...rest } = obj
-
-    const alunosConnect = alunosId.map((alunoId) => ({
-      aluno: { connect: { id: alunoId } }
-    }));
-
+    const { professorId, turmaId, alunosId, status, tema, usuariocriacao, datacriacao, usuarioalteracao, dataalteracao, ...rest } = obj;
+  
     const createdAula = await this.prisma.aula.create({
       data: {
         professor: {
@@ -46,7 +41,7 @@ export class AulasService {
           connect: { id: turmaId }
         },
         aluno: {
-          create: alunosConnect
+          connect: alunosId.map((alunoId) => ({ id: alunoId }))
         },
         status,
         tema,
@@ -58,7 +53,6 @@ export class AulasService {
       },
     });
   
-
-    return createdAula
+    return createdAula;
   }
 }
