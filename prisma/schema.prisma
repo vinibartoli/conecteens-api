@@ -8,7 +8,6 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
-  
 }
 
 model Aluno {
@@ -24,14 +23,14 @@ model Aluno {
   datacriacao        DateTime?
   usuarioalteracao   String?
   dataalteracao      DateTime?
-  aula Aulas_Alunos[]
+  aula               Aluno_Aulas[]
 
   @@map("alunos")
 }
 
 model Professor {
   id               Int       @id @default(autoincrement())
-  cpf              String    @unique
+  cpf              String
   nome             String
   dataNasc         DateTime
   celular          String
@@ -40,7 +39,7 @@ model Professor {
   datacriacao      DateTime?
   usuarioalteracao String?
   dataalteracao    DateTime?
-  aula Aula[]
+  aula             Aula[]
 
   @@map("professores")
 }
@@ -53,7 +52,7 @@ model Turma {
   datacriacao      DateTime?
   usuarioalteracao String?
   dataalteracao    DateTime?
-  aula Aula[]
+  aula             Aula[]
 
   @@map("turmas")
 }
@@ -69,14 +68,14 @@ model Usuario {
 }
 
 model Aula {
-  id Int @id @default(autoincrement())
-  professorId Int
-  professor Professor @relation(fields: [professorId], references: [id])
-  turmaId Int
-  turma Turma @relation(fields: [turmaId], references: [id])
-  aluno Aulas_Alunos[]
-  tema String
-  status Boolean
+  id               Int        @id @default(autoincrement())
+  professor        Professor? @relation(fields: [professorId], references: [id])
+  professorId      Int?
+  turma            Turma?     @relation(fields: [turmaId], references: [id])
+  turmaId          Int?
+  aluno            Aluno_Aulas[]
+  tema             String
+  status           Boolean
   usuariocriacao   String?
   datacriacao      DateTime?
   usuarioalteracao String?
@@ -85,12 +84,11 @@ model Aula {
   @@map("aulas")
 }
 
-model Aulas_Alunos {
-  aula Aula @relation(fields: [aulaId], references: [id])
-  aulaId Int
+model Aluno_Aulas {
   aluno Aluno @relation(fields: [alunoId], references: [id])
   alunoId Int
+  aula Aula @relation(fields: [aulaId], references: [id])
+  aulaId Int
 
-  @@id([aulaId, alunoId])
-  @@map("aula_aluno")
+  @@id([alunoId, aulaId])
 }

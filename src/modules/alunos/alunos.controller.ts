@@ -22,13 +22,13 @@ export class AlunosController {
     }
 
     @Post()
-    async create(@Body() data: AlunosDTO) {
-        return this.alunoService.create(data)
+    async create(@Body() obj: AlunosDTO) {
+        return this.alunoService.create(obj)
     }
 
     @Put(':id')
-    async update(@Param('id', ParseIntPipe) id: number, @Body() data: AlunosUpdateDTO) {
-        return this.alunoService.update(id, data);
+    async update(@Param('id', ParseIntPipe) id: number, @Body() obj: AlunosUpdateDTO) {
+        return this.alunoService.update(id, obj);
     }
 
     // @Delete()

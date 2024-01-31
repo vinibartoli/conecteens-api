@@ -22,13 +22,13 @@ export class ProfessoresController {
     }
 
     @Post()
-    async create(@Body() data: ProfessoresDTO) {
-        return this.professoresService.create(data);
+    async create(@Body() obj: ProfessoresDTO) {
+        return this.professoresService.create(obj);
     }
 
     @Put(':id')
-    async update(@Param('id', ParseIntPipe) id: number, @Body() data: ProfessoresUpdateDTO) {
-        return this.professoresService.update(id, data);
+    async update(@Param('id', ParseIntPipe) id: number, @Body() obj: ProfessoresUpdateDTO) {
+        return this.professoresService.update(id, obj);
     }
 
 }

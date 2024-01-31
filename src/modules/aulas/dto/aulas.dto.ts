@@ -1,16 +1,15 @@
-import { Aluno, Professor, Turma } from '@prisma/client';
-import { IsBoolean, IsDateString, IsOptional } from 'class-validator';
+import {  IsDateString, IsOptional } from 'class-validator';
 
 export class AulasDTO {
-  id: number;
-  aluno: Aluno[];
-  turma: Turma;
-  professor: Professor;
+  professorId: number;
+
+  turmaId: number;
+
+  alunosId: number[]
+
+  status: boolean;
+
   tema: string;
-  
-  @IsBoolean()
-  @IsOptional()
-  status?: boolean;
 
   @IsOptional()
   usuariocriacao?: string;

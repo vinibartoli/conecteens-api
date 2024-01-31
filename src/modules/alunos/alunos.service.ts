@@ -23,8 +23,8 @@ export class AlunosService {
         return this.prisma.aluno.findUnique({where: {id}})
     }
 
-    async create(data: AlunosDTO) {
-        const { cpf, ...rest } = data;
+    async create(obj: AlunosDTO) {
+        const { cpf, ...rest } = obj;
 
         const objExists = await this.prisma.aluno.findFirst({ where: { cpf } });
 
@@ -34,7 +34,7 @@ export class AlunosService {
 
         const objCreateInput = {
             ...rest,
-            cpf: data.cpf,
+            cpf: obj.cpf,
             usuariocriacao: 'teste',
             datacriacao: await this.momentService.timeExact()
         };
@@ -46,10 +46,10 @@ export class AlunosService {
         return createdObj;
     }
 
-    async update(id: number, data: AlunosUpdateDTO) {
-        const { cpf, ...rest } = data
+    async update(id: number, obj: AlunosUpdateDTO) {
+        const { cpf, ...rest } = obj
 
-        const objExist = await this.prisma.aluno.findFirst({ where: { cpf: data.cpf }});
+        const objExist = await this.prisma.aluno.findFirst({ where: { cpf: obj.cpf }});
         
         if(objExist) {
             throw new ConflictException("Já existe um aluno com esse CPF!")

@@ -22,12 +22,12 @@ export class TurmasController {
     }
 
     @Post()
-    async create(@Body() data: TurmasDTO) {
-        return this.turmasService.create(data);
+    async create(@Body() obj: TurmasDTO) {
+        return this.turmasService.create(obj);
     }
 
     @Put(':id')
-    async update(@Param('id', ParseIntPipe) id: number, @Body() data: TurmasUpdateDTO) {
-        return this.turmasService.update(id, data);
+    async update(@Param('id', ParseIntPipe) id: number, @Body() obj: TurmasUpdateDTO) {
+        return this.turmasService.update(id, obj);
     }
 }

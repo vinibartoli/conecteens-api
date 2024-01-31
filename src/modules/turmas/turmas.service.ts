@@ -24,10 +24,10 @@ export class TurmasService {
         return await this.prisma.turma.findUnique({where: {id}})
     }
 
-    async create(data: TurmasDTO) {
-        const { ...rest } = data;
+    async create(obj: TurmasDTO) {
+        const { ...rest } = obj;
 
-        const objExists = await this.prisma.turma.findFirst({ where: { descricao: data.descricao } });
+        const objExists = await this.prisma.turma.findFirst({ where: { descricao: obj.descricao } });
 
         if (objExists) {
             throw new ConflictException('Turma já cadastrada!');
@@ -46,10 +46,10 @@ export class TurmasService {
         return createdObj;
     }
 
-    async update(id: number, data: TurmasUpdateDTO) {
-        const { descricao, ...rest } = data
+    async update(id: number, obj: TurmasUpdateDTO) {
+        const { descricao, ...rest } = obj
 
-        const objExists = await this.prisma.turma.findFirst({ where: { descricao: data.descricao } });
+        const objExists = await this.prisma.turma.findFirst({ where: { descricao: obj.descricao } });
         
         if(objExists) {
             throw new ConflictException("Já existe uma turma com essa descrição!")
