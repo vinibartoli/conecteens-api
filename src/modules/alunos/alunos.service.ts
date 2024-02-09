@@ -50,8 +50,8 @@ export class AlunosService {
         const { cpf, ...rest } = obj
 
         const objExist = await this.prisma.aluno.findFirst({ where: { cpf: obj.cpf }});
-        
-        if(objExist) {
+
+        if(objExist && obj.cpf != null) {
             throw new ConflictException("Já existe um aluno com esse CPF!")
         }
 

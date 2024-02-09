@@ -12,22 +12,22 @@ export class ProfessoresController {
     constructor(private readonly professoresService: ProfessoresService) {}
 
     @Get()
-    async findAll() {
+    findAll() {
         return this.professoresService.findAll();
     }
 
     @Get(':id')
-    async findByID(@Param('id', ParseIntPipe) id: number) {
+    findByID(@Param('id', ParseIntPipe) id: number) {
         return this.professoresService.findByID(id);
     }
 
     @Post()
-    async create(@Body() obj: ProfessoresDTO) {
+    create(@Body() obj: ProfessoresDTO) {
         return this.professoresService.create(obj);
     }
 
     @Put(':id')
-    async update(@Param('id', ParseIntPipe) id: number, @Body() obj: ProfessoresUpdateDTO) {
+    update(@Param('id', ParseIntPipe) id: number, @Body() obj: ProfessoresUpdateDTO) {
         return this.professoresService.update(id, obj);
     }
 

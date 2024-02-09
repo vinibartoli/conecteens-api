@@ -8,7 +8,7 @@ import * as moment from 'moment-timezone';
 @Injectable()
 export class MomentService {
 
-    timeExact() {
+    async timeExact() {
         const currentDate = moment.utc();
         const utcMinus3 = currentDate.clone().subtract(3, 'hours').toDate();
         return utcMinus3;

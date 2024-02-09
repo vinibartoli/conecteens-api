@@ -51,7 +51,7 @@ export class TurmasService {
 
         const objExists = await this.prisma.turma.findFirst({ where: { descricao: obj.descricao } });
         
-        if(objExists) {
+        if(objExists && obj.descricao != null) {
             throw new ConflictException("Já existe uma turma com essa descrição!")
         }
 

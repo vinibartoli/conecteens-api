@@ -52,7 +52,7 @@ export class ProfessoresService {
 
         const objExist = await this.prisma.professor.findFirst({ where: { cpf: obj.cpf }});
         
-        if(objExist) {
+        if(objExist && obj.cpf != null) {
             throw new ConflictException("Já existe um professor com esse CPF!")
         }
 
@@ -62,7 +62,7 @@ export class ProfessoresService {
             dataalteracao: await this.momentService.timeExact()
         };
 
-        const updatedObj = await this.prisma.aluno.update({
+        const updatedObj = await this.prisma.professor.update({
             data: objUpdateInput,
             where: {id}
         })

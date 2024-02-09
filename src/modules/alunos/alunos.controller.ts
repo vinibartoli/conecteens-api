@@ -12,22 +12,22 @@ export class AlunosController {
     constructor(private readonly alunoService: AlunosService) {}
 
     @Get()
-    async findAll() {
+    findAll() {
         return this.alunoService.findAll();
     }
 
     @Get(':id')
-    async findByID(@Param('id', ParseIntPipe) id: number) {
+    findByID(@Param('id', ParseIntPipe) id: number) {
         return this.alunoService.findByID(id);
     }
 
     @Post()
-    async create(@Body() obj: AlunosDTO) {
+    create(@Body() obj: AlunosDTO) {
         return this.alunoService.create(obj)
     }
 
     @Put(':id')
-    async update(@Param('id', ParseIntPipe) id: number, @Body() obj: AlunosUpdateDTO) {
+    update(@Param('id', ParseIntPipe) id: number, @Body() obj: AlunosUpdateDTO) {
         return this.alunoService.update(id, obj);
     }
 

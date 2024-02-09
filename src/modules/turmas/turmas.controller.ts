@@ -12,22 +12,22 @@ export class TurmasController {
     constructor(private readonly turmasService: TurmasService) {}
 
     @Get()
-    async findAll() {
+    findAll() {
         return this.turmasService.findAll();
     }
 
     @Get(':id')
-    async findByID(@Param('id', ParseIntPipe) id: number) {
+    findByID(@Param('id', ParseIntPipe) id: number) {
         return this.turmasService.findByID(id);
     }
 
     @Post()
-    async create(@Body() obj: TurmasDTO) {
+    create(@Body() obj: TurmasDTO) {
         return this.turmasService.create(obj);
     }
 
     @Put(':id')
-    async update(@Param('id', ParseIntPipe) id: number, @Body() obj: TurmasUpdateDTO) {
+    update(@Param('id', ParseIntPipe) id: number, @Body() obj: TurmasUpdateDTO) {
         return this.turmasService.update(id, obj);
     }
 }

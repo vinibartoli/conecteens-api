@@ -6,6 +6,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { MomentService } from '../shared/moment.service';
 import { AulasDTO } from './dto/aulas.dto';
+import { AulasUpdateDTO } from './dto/aulasUpdate.dto';
 
 @Injectable()
 export class AulasService {
@@ -19,19 +20,25 @@ export class AulasService {
       include: {
         professor: { select: { id: true, nome: true }},
         turma: { select: { id: true, descricao: true }},
-        aluno: { select: { alunoId: true, aluno: true }}
+        aluno: { select: { aluno: {select: {id: true, nome: true}}}}
       }
     })
   }
 
   async findByID(id: number) {
-    return this.prisma.aula.findUnique({where: {id}})
+    return this.prisma.aula.findUnique({
+      where: {id},
+      include: {
+        professor: { select: { id: true, nome: true }},
+        turma: { select: { id: true, descricao: true }},
+        aluno: { select: { aluno: {select: {id: true, nome: true}}}}
+      }
+    })
   }
 
   async create(obj: AulasDTO) {
     const { professorId, turmaId, tema, status, alunosIds } = obj;
 
-    // Verifique se o professor existe
     const professorExists = await this.prisma.professor.findUnique({
       where: { id: professorId },
     });
@@ -39,7 +46,6 @@ export class AulasService {
       throw new NotFoundException('Professor não encontrado');
     }
 
-    // Verifique se a turma existe
     const turmaExists = await this.prisma.turma.findUnique({
       where: { id: turmaId },
     });
@@ -47,7 +53,6 @@ export class AulasService {
       throw new NotFoundException('Turma não encontrada');
     }
 
-    // Verifique se os alunos existem
     const alunos = await this.prisma.aluno.findMany({
       where: { id: { in: alunosIds } },
     });
@@ -56,7 +61,6 @@ export class AulasService {
       throw new NotFoundException('Um ou mais alunos não encontrados');
     }
 
-    // Crie a aula
     const createdAula = await this.prisma.aula.create({
       data: {
         professorId,
@@ -77,5 +81,24 @@ export class AulasService {
     });
 
     return createdAula;
+  }
+
+  async update(id: number, obj: AulasUpdateDTO) {
+    const { tema ,...rest } = obj
+
+    const objUpdateInput = {
+      ...rest,
+      tema: obj.tema,
+      usuarioalteracao: 'teste-update',
+      dataalteracao: await this.momentService.timeExact()
+    }
+
+    const updatedObj = await this.prisma.aula.update({
+      data:objUpdateInput,
+      where: {id},
+      include: {aluno: { select: { aluno: {select: {id: true, nome: true}}}}} ,
+    })
+
+    return updatedObj;
   }
 }
